@@ -232,7 +232,7 @@ El humano hace los logins en los CLIs **al iniciar el proyecto** (en la misma m�
 
 **Regla para el agente:** 7.1 requiere build de producción exitoso (tras 6.x). Si el dominio es nuevo o cambia, 7.2 (DNS) puede ser manual; documentar en 7.3 qué debe configurarse.
 
-**Deploy y documentación (7.1–7.3):** (1) Ejecutar deploy a producción (Vercel u otro) y verificar que la URL de producción responde. (2) Si el dominio o DNS cambian, documentar en el handoff los pasos necesarios (registro, CNAME, etc.). (3) El handoff debe incluir de forma explícita: **cómo editar contenido** (Sanity: **URL del Studio en producción** — `https://<studioHost>.sanity.studio/` documentada en 3.9 —, acceso, tipos de documento; o si no hay Sanity: rutas de los archivos JSON/CSV/Markdown y **cómo desplegar tras editar** — p. ej. "tras editar `content/paginas.json`, ejecutar build y deploy"); **cómo desplegar** (comando de build, plataforma, rama o trigger); **variables de entorno** necesarias (Sanity projectId/dataset/token si aplica; **acción del formulario de contacto** — p. ej. `CONTACT_FORM_ACTION` o ID de Formspree/Resend — si aplica; dominio). No dar la Fase 7 por cerrada sin URL de producción y documento de handoff que cubra edición de contenido, despliegue y variables (incluidas las del formulario cuando exista).
+**Deploy y documentación (7.1–7.3):** (1) Ejecutar deploy a producción (Vercel u otro) y verificar que la URL de producción responde. (2) Si el dominio o DNS cambian, documentar en el handoff los pasos necesarios (registro, CNAME, etc.). (3) El agente debe **rellenar el HANDOFF** (p. ej. `docs/HANDOFF.md`), incluyendo la tabla **Enlaces útiles** con las URLs reales: repositorio (remote de git), Sanity Studio (URL del deploy 3.9), Sanity Manage (proyecto en sanity.io), Vercel (URL del proyecto en el dashboard), sitio web nuevo (producción), sitio origen que se ha duplicado. (4) El handoff debe incluir de forma explícita: **cómo editar contenido** (Sanity: **URL del Studio en producción** — `https://<studioHost>.sanity.studio/` documentada en 3.9 —, acceso, tipos de documento; o si no hay Sanity: rutas de los archivos JSON/CSV/Markdown y **cómo desplegar tras editar** — p. ej. "tras editar `content/paginas.json`, ejecutar build y deploy"); **cómo desplegar** (comando de build, plataforma, rama o trigger); **variables de entorno** necesarias (Sanity projectId/dataset/token si aplica; **acción del formulario de contacto** — p. ej. `CONTACT_FORM_ACTION` o ID de Formspree/Resend — si aplica; dominio). No dar la Fase 7 por cerrada sin URL de producción y documento de handoff que cubra edición de contenido, despliegue y variables (incluidas las del formulario cuando exista).
 
 **Deploy hook Sanity → Vercel (7.4):** Para que cada publicación en Sanity dispare un rebuild del sitio en Vercel: (1) **Crear el deploy hook en Vercel** — no existe API/CLI pública; hay que hacerlo en el **dashboard**: proyecto Vercel → **Settings** → **Git** → **Deploy Hooks** → **Create Hook** (nombre ej. "Sanity", rama a desplegar ej. `main`), copiar la URL generada. (2) **Configurar en el Studio:** añadir en `.env` (raíz): `SANITY_STUDIO_VERCEL_DEPLOY_HOOK_URL=<url_copiada>`. Si el Studio incluye el plugin `sanity-plugin-vercel-deploy`, la herramienta "Deploy" usará esa URL para disparar rebuilds; opcionalmente el usuario puede añadir un token de Vercel como Studio Secret para ver el estado del deployment. (3) Documentar en el handoff que el deploy hook está configurado y que, al publicar en Sanity, puede dispararse un rebuild desde la herramienta Deploy del Studio (o mediante un webhook/script que haga POST a esa URL). No dar por cerrada 7.4 sin haber documentado en handoff los pasos para crear/configurar el hook y la variable `SANITY_STUDIO_VERCEL_DEPLOY_HOOK_URL`.
 
@@ -240,7 +240,7 @@ El humano hace los logins en los CLIs **al iniciar el proyecto** (en la misma m�
 
 ## Orden lineal sugerido (checklist)
 
-Para usar como checklist en un nuevo sitio, este es un orden posible que respeta dependencias:
+Para usar como checklist en un nuevo sitio, este es un orden posible que respeta dependencias. **Al final de cada fase (tras sus tareas), hacer `git commit` con mensaje descriptivo de la fase. Al final del proceso completo, hacer `git push`.**
 
 0. **Preparación:** Humano hace logins (Vercel, Sanity, GitHub) al iniciar. Agente, antes de Fase 1: ejecutar `vercel whoami`, `sanity debug`, `gh auth status`; si algo falla, avisar y no continuar; si todo OK, proseguir (el humano puede irse).
 1. **URLs:** extraer con sitemap/crawl; input = URL de la web origen (1.1)
@@ -268,6 +268,7 @@ Para usar como checklist en un nuevo sitio, este es un orden posible que respeta
 22. **Deploy staging** (5.9)
 23. **Responsive y pulido** (6.1–6.5)
 24. **Deploy producción, handoff y deploy hook Sanity → Vercel** (7.1–7.4)
+25. **git push** al remoto (tras los commits hechos al cierre de cada fase)
 
 ---
 
@@ -325,6 +326,11 @@ TinyJPG es manual en la web. Para automatizar: usar **sharp** (Node) o **squoosh
 - **Fase 5:** Todas las rutas del origen; **layout y estructura de cada tipo de página replicando el origen**; colores y tipografía del origen aplicados; header y footer con todos los enlaces y comportamiento; componente de imagen (lazy load; lightbox si hay galerías); formularios con destino y consentimiento/avisos; og, twitter, sitemap, robots, JSON-LD si aplica; URL de staging.
 - **Fase 6:** Móvil revisado; grids y tap targets; sin información crítica solo en hover; revisión a11y (contraste, foco, labels, h1–h6).
 - **Fase 7:** URL de producción; handoff con edición de contenido, despliegue y variables de entorno; deploy hook Sanity → Vercel configurado y documentado.
+
+### Control de versiones (git)
+
+- **Al final de cada fase (1 a 7):** Hacer commit de los entregables de esa fase antes de pasar a la siguiente. Ejemplo: `git add . && git commit -m "Fase N: <descripción breve>"` (ej. "Fase 1: descubrimiento e inventario", "Fase 2: marca y contenido"). No dar por cerrada una fase sin haber hecho commit.
+- **Al final del proceso completo:** Una vez cerrada la Fase 7 (deploy, handoff y deploy hook documentados), hacer **git push** al remoto (`git push` o `git push origin main` según la rama). Así todo el trabajo queda subido en un único push final tras los commits locales por fase.
 
 ### Qué puede fallar y qué hacer
 

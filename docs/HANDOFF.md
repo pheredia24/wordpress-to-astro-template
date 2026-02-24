@@ -1,6 +1,21 @@
 # Handoff – {{PROJECT_NAME}}
 
-> Sustituir los placeholders `{{...}}` al cerrar la Fase 7 (deploy y documentación).
+> El **agente** rellena este documento al cerrar la Fase 7 (deploy y documentación), sustituyendo todos los placeholders `{{...}}` por los valores reales del proyecto.
+
+## Enlaces útiles
+
+> El agente debe rellenar cada URL con el valor real (repositorio, Studio en producción, Sanity Manage, Vercel, sitio nuevo, sitio origen).
+
+| Qué | URL |
+|-----|-----|
+| **Repositorio** | {{REPO_URL}} |
+| **Sanity Studio** (editar contenido) | {{STUDIO_URL}} |
+| **Sanity Manage** (proyecto, tokens, dataset) | {{SANITY_MANAGE_URL}} |
+| **Vercel** (deploys, variables, dominio) | {{VERCEL_PROJECT_URL}} |
+| **Sitio web nuevo** | {{PRODUCTION_URL}} |
+| **Sitio que hemos duplicado** (referencia) | {{ORIGIN_SITE_URL}} |
+
+---
 
 ## Sanity Studio
 
