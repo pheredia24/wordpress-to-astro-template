@@ -1,0 +1,9 @@
+{
+  "name": "wordpress-to-astro-migration",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "seed-sanity": "node scripts/seed-sanity.mjs"
+  }
+}
