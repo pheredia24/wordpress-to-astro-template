@@ -10,7 +10,7 @@ Proceso para migrar sitios WordPress a una web custom con Astro + Sanity + Verce
 
 **Replicar** = misma estructura de URLs y navegación; mismo contenido; **misma estructura de cada página** (secciones, orden, tipo de listado/grid, componentes); **mismos colores y tipografías** (extraídos del origen); **mismo header y footer** (todos los enlaces, incluidos redes sociales; comportamiento como sticky/fixed si el origen lo tiene). **Mejorar** = solo mejoras técnicas sin rediseño: rendimiento (imágenes optimizadas, lazy load, formatos modernos), HTML semántico, accesibilidad básica, SEO técnico, código mantenible. No inventar paletas, fuentes ni layouts; no rediseñar listados ni páginas de detalle.
 
-**Para el agente:** Cada fase incluye criterios de cierre y entregables obligatorios. La prioridad es **replicar fielmente** el sitio origen (colores, tipografía, estructura de cada página, header y footer con todos los enlaces y comportamiento); no se considera una fase completada si falta alguno de los artefactos o criterios listados en la guía (auditoría con body/imágenes/forms **y layout por tipo y header/footer**, lista de medios completa, **colores y tipografía extraídos del origen**, imágenes optimizadas, ortografía documentada, Sanity o excepción documentada, **Studio desplegado en producción con URL en handoff**, favicon set completo, **header/footer replicando enlaces y comportamiento**, **páginas replicando estructura del origen**, formularios con consentimiento y destino real, SEO con og/twitter/JSON-LD, deploy staging y producción, handoff con edición y variables, deploy hook Sanity → Vercel documentado). Si un paso no aplica al sitio concreto (ej. no hay galerías), documentar la excepción en el repo en lugar de omitir sin constancia.
+**Para el agente:** Cada fase incluye criterios de cierre y entregables obligatorios. La prioridad es **replicar fielmente** el sitio origen (colores, tipografía, estructura de cada página, header y footer con todos los enlaces y comportamiento); no se considera una fase completada si falta alguno de los artefactos o criterios listados en la guía (auditoría con body/imágenes/forms **y layout por tipo y header/footer**, lista de medios completa, **screenshots de referencia del origen (1.6) y verificación visual (6.0)**, **colores y tipografía extraídos del origen**, imágenes optimizadas, ortografía documentada, Sanity o excepción documentada, **Studio desplegado en producción con URL en handoff**, favicon set completo, **header/footer replicando enlaces y comportamiento**, **páginas replicando estructura del origen**, formularios con consentimiento y destino real, SEO con og/twitter/JSON-LD, deploy staging y producción, handoff con edición y variables, deploy hook Sanity → Vercel documentado). Si un paso no aplica al sitio concreto (ej. no hay galerías), documentar la excepción en el repo en lugar de omitir sin constancia.
 
 ---
 
@@ -34,12 +34,12 @@ El humano hace los logins en los CLIs **al iniciar el proyecto** (en la misma m�
 | Fase | Objetivo | Salida |
 |------|----------|--------|
 | **0. Preparación** | Entorno listo para deploy y CMS | Humano: logins hechos. Agente: comprobar con vercel whoami, sanity debug, gh auth status; si OK, seguir; si no, avisar y no continuar. |
-| **1. Descubrimiento** | Inventario completo de la web actual | Sitemap, estructura, auditoría (contenido + layout por tipo + header/footer completos), lista de medios |
+| **1. Descubrimiento** | Inventario completo de la web actual | Sitemap, estructura, auditoría (contenido + layout por tipo + header/footer completos), lista de medios, **screenshots de referencia** por tipo de página y viewport |
 | **2. Marca y contenido** | Branding y contenido listos para CMS | Colores y tipografía **extraídos del origen**, logos, imágenes optimizadas, contenido en JSON/CMS |
 | **3. Plataforma y CMS** | Stack elegido y contenido en Sanity | Sanity con schemas, contenido seedeado, paneles definidos |
 | **4. Diseño de interfaz** | Header, footer, layouts **del origen** | Guía de estilos con valores del origen; header (comportamiento + enlaces) y footer (todos los enlaces); layouts por tipo replicando estructura |
 | **5. Build** | Páginas, formularios, redirects, SEO | Sitio funcional en staging |
-| **6. Responsive y pulido** | Móvil, tacto, rendimiento, accesibilidad | Sitio listo para producción |
+| **6. Responsive y pulido** | Verificación visual vs referencia, móvil, tacto, rendimiento, accesibilidad | Sitio fiel al origen y listo para producción |
 | **7. Deploy y entrega** | Producción y handoff | Deploy prod cuanto antes, documentación |
 
 ---
@@ -77,14 +77,15 @@ El humano hace los logins en los CLIs **al iniciar el proyecto** (en la misma m�
 | 1.3 | **Documentar estructura de la web**: navegación, jerarquía, qué páginas comparten plantilla (depende del sitio: puede haber /proyectos, /servicios, /productos, etc.) | 1.2 | Doc o esquema: “nav, árbol, templates” |
 | 1.4 | **Auditoría de contenido por URL**: textos, bloques, imágenes in-page, formularios, embeds; **por tipo de página, estructura de layout** (secciones en orden); **global: header** (comportamiento al scroll: sticky/fixed/none, todos los enlaces); **footer** (todos los enlaces: legal, contacto, redes sociales — uno por uno, ej. LinkedIn, Twitter, etc.) | 1.2 | Inventario (spreadsheet o JSON) por URL + doc de layout por tipo y header/footer |
 | 1.5 | **Extraer referencias a todos los medios**: imágenes, PDFs, etc. (URL origen + uso previsto), a partir de la auditoría (1.4) o del crawl | 1.4 (o 1.1 si se hace en el mismo crawl) | Lista de assets con contexto |
+| 1.6 | **Capturar screenshots de referencia del sitio origen**: al menos una captura por **tipo de página** (home, un listado, un detalle, una legal) y por **viewport** (desktop ej. 1280px, móvil ej. 375px). Guardar en `phase1/reference-screenshots/` con nombres claros (ej. `home-desktop.png`, `listado-mobile.png`). Son la referencia visual para comprobar fidelidad más adelante | 1.2, 1.4 | Carpeta con screenshots origen (por tipo y viewport) |
 
-**Regla para el agente:** No pasar a Fase 2 hasta tener: (1) todas las URLs con tipo asignado, (2) cada URL con al menos título y tipo de contenido, (3) lista de medios sin huecos obvios, (4) **estructura de layout por tipo de página** y **especificación global de header (comportamiento + enlaces) y footer (todos los enlaces)**. Si la estructura no está clara, inspeccionar más URLs por patrón antes de seguir.
+**Regla para el agente:** No pasar a Fase 2 hasta tener: (1) todas las URLs con tipo asignado, (2) cada URL con al menos título y tipo de contenido, (3) lista de medios sin huecos obvios, (4) **screenshots de referencia** (1.6) por tipo de página y viewport, (5) **estructura de layout por tipo de página** y **especificación global de header (comportamiento + enlaces) y footer (todos los enlaces)**. Si la estructura no está clara, inspeccionar más URLs por patrón antes de seguir.
 
 **Formato obligatorio de la auditoría (1.4):** El inventario por URL debe incluir, para cada URL relevante: **title**; **tipo de página**; **body** (texto principal o resumen de bloques); **imágenes in-page** (lista de URLs o referencias con contexto: hero, galería, card, etc.); **formularios** (campos, action si existe); **embeds** si los hay (vídeo, mapa, etc.). Además, para **cada tipo de página** (home, listado de proyectos, listado por categoría, detalle de proyecto, legal, etc.): **estructura de layout** — secciones o bloques en orden (ej. hero, título, grid de cards, sidebar, CTA), tipo de presentación (grid, lista, filtros, etc.). A nivel **global**: **header** — comportamiento al hacer scroll (sticky, fixed, estático); lista completa de enlaces del menú. **Footer** — lista completa de enlaces: legales, contacto, y **cada red social** con su URL (LinkedIn, Twitter, Instagram, etc.); no omitir ninguno. No basta con título y tipo: sin body e imágenes por URL la Fase 2 y el build quedarán incompletos. **Regla estricta:** Para cada URL, el agente debe obtener el HTML (fetch/curl o crawl que devuelva HTML) y parsear con herramienta adecuada (cheerio, jsdom, regex sobre el HTML, etc.) para extraer todos los `img` (atributo `src`, resuelto a URL absoluta) y cada `form` (atributo `action`, campos por `name`/`id`). Rellenar en el artefacto de auditoría los arrays `images` (con `src` y `context` según el contenedor: hero, galería, card, logo) y `forms`. No dar por válida una auditoría en la que `images` esté vacío para URLs que, según el sitemap o la inspección, contienen imágenes.
 
 **Formato obligatorio de la lista de medios (1.5):** Una lista (JSON, CSV o texto) donde cada medio tenga: **URL origen** (absoluta), **uso previsto** (ej. “logo header”, “galería proyecto X”, “hero home”), y opcionalmente **página/URL donde aparece**. Construir esta lista **a partir de la auditoría:** por cada entrada en `audit[*].images`, añadir una fila en la lista de medios con URL origen, uso previsto (contexto) y página. Incluir también cualquier imagen que aparezca en el sitemap por URL si no está ya en la auditoría. Si el sitemap indica N imágenes para una URL, la lista de medios debe reflejarlas (extraer del HTML si hace falta). No cerrar la Fase 1 con huecos obvios: todas las URLs con imágenes en el origen deben estar representadas en la lista de medios.
 
-**Salida de la fase:** `urls.json`, documento/esquema de estructura (nav, árbol, templates), auditoría por URL (title, body, images, forms), **estructura de layout por tipo de página** y **especificación de header (comportamiento al scroll + enlaces) y footer (todos los enlaces, incluidas redes sociales)**, lista de medios con URLs.
+**Salida de la fase:** `urls.json`, documento/esquema de estructura (nav, árbol, templates), auditoría por URL (title, body, images, forms), **estructura de layout por tipo de página** y **especificación de header (comportamiento al scroll + enlaces) y footer (todos los enlaces, incluidas redes sociales)**, lista de medios con URLs, **screenshots de referencia** del origen por tipo de página y viewport en `phase1/reference-screenshots/`.
 
 ---
 
@@ -201,19 +202,20 @@ El humano hace los logins en los CLIs **al iniciar el proyecto** (en la misma m�
 
 ## Fase 6: Responsive y pulido
 
-**Objetivo:** Ajustar móvil, tacto, rendimiento y accesibilidad.
+**Objetivo:** Verificar fidelidad visual al origen, ajustar móvil, tacto, rendimiento y accesibilidad.
 
 | # | Tarea | Depende de | Salida / Notas |
 |---|--------|------------|----------------|
+| 6.0 | **Verificación visual frente a referencia**: Comparar el sitio nuevo (staging) con los screenshots de referencia del origen (1.6) **por cada tipo de página** (home, listado, detalle, legal) y por viewport (desktop, móvil). Comprobar: colores y tipografía equivalentes al origen; misma estructura de secciones y orden; header y footer con mismos enlaces y comportamiento. Si hay diferencias evidentes, **corregir antes de seguir** (ajustar estilos, layout o contenido). Opcional: guardar screenshots del sitio nuevo en la misma convención (ej. `phase6/new-screenshots/`) o documentar en handoff que se ha realizado la comparación. No dar por cerrada la Fase 6 sin esta verificación hecha | 5.9, 1.6 | Comparación documentada; discrepancias corregidas |
 | 6.1 | **Ajustes móvil por página**: reducir paddings, ocultar o simplificar secciones en móvil | 5.4, 4.5 | CSS/componentes responsive |
 | 6.2 | **Grids de imágenes en móvil** (columnas, tamaño tap, galerías) | 5.5, 6.1 | Comportamiento móvil definido |
 | 6.3 | **Evitar dependencia de hover en móvil**: no solo hover para información crítica; tap targets adecuados | 5.3, 5.4 | Interacciones táctiles correctas |
 | 6.4 | **Rendimiento**: lazy load, formatos de imagen (ya optimizadas con TinyJPG en 2.4), critical CSS | 5.5, 2.4 | Métricas aceptables |
 | 6.5 | **Accesibilidad**: contraste, foco, labels, estructura de encabezados | 4.1, 5.4 | Revisión a11y |
 
-**Regla para el agente:** No dar por cerrada la Fase 6 sin haber **aplicado en código** cada ítem del checklist siguiente (no basta con documentar; los cambios deben verse en el sitio). Revisar al menos un breakpoint móvil; asegurar que no haya información crítica solo en hover; tap targets y grids de imágenes correctos. Luego pasar a Fase 7.
+**Regla para el agente:** No dar por cerrada la Fase 6 sin (1) **haber realizado la verificación visual (6.0)** comparando con los screenshots de referencia y corregido diferencias, y (2) haber **aplicado en código** cada ítem del checklist siguiente (no basta con documentar; los cambios deben verse en el sitio). Revisar al menos un breakpoint móvil; asegurar que no haya información crítica solo en hover; tap targets y grids de imágenes correctos. Luego pasar a Fase 7.
 
-**Checklist Fase 6 (no omitir):** (1) **6.1** Ajustes móvil por página: en al menos un breakpoint móvil, revisar paddings y si alguna sección debe ocultarse o simplificarse; aplicar en CSS o componentes. (2) **6.2** Si hay galerías o grids de imágenes: definir columnas, tamaño de tap (mín. ~44px) y comportamiento en móvil. (3) **6.3** Comprobar que la información crítica no dependa solo de hover (tooltips, textos en hover); tap targets suficientes. (4) **6.4** Imágenes: usar lazy load (loading="lazy" o equivalente) en las que no sean above-the-fold; servir formatos modernos (WebP/AVIF) según 2.4; considerar critical CSS para above-the-fold si el rendimiento lo requiere. (5) **6.5** Revisión a11y mínima: contraste de texto/fondo, foco visible en interactivos, labels en formularios, estructura de encabezados (un solo h1 por página, jerarquía h1→h2→h3 coherente).
+**Checklist Fase 6 (no omitir):** (0) **6.0** Verificación visual: comparar cada tipo de página del sitio nuevo con los screenshots de referencia (phase1/reference-screenshots/); colores, tipografía, estructura y header/footer deben coincidir con el origen; corregir discrepancias. (1) **6.1** Ajustes móvil por página: en al menos un breakpoint móvil, revisar paddings y si alguna sección debe ocultarse o simplificarse; aplicar en CSS o componentes. (2) **6.2** Si hay galerías o grids de imágenes: definir columnas, tamaño de tap (mín. ~44px) y comportamiento en móvil. (3) **6.3** Comprobar que la información crítica no dependa solo de hover (tooltips, textos en hover); tap targets suficientes. (4) **6.4** Imágenes: usar lazy load (loading="lazy" o equivalente) en las que no sean above-the-fold; servir formatos modernos (WebP/AVIF) según 2.4; considerar critical CSS para above-the-fold si el rendimiento lo requiere. (5) **6.5** Revisión a11y mínima: contraste de texto/fondo, foco visible en interactivos, labels en formularios, estructura de encabezados (un solo h1 por página, jerarquía h1→h2→h3 coherente).
 
 **Salida:** Sitio listo para producción desde el punto de vista UX y técnico.
 
@@ -245,7 +247,7 @@ Para usar como checklist en un nuevo sitio, este es un orden posible que respeta
 0. **Preparación:** Humano hace logins (Vercel, Sanity, GitHub) al iniciar. Agente, antes de Fase 1: ejecutar `vercel whoami`, `sanity debug`, `gh auth status`; si algo falla, avisar y no continuar; si todo OK, proseguir (el humano puede irse).
 1. **URLs:** extraer con sitemap/crawl; input = URL de la web origen (1.1)
 2. **Estructura:** clasificar URLs, documentar nav y templates (1.2–1.3)
-3. **Auditoría:** contenido y medios por URL (1.4–1.5)
+3. **Auditoría:** contenido y medios por URL (1.4–1.5); **screenshots de referencia** del origen por tipo de página y viewport (1.6)
 4. **Branding:** definir marca, descargar logos (2.1–2.2)
 5. **Imágenes:** extraer y descargar (2.3)
 6. **Optimizar imágenes con TinyJPG** (2.4)
@@ -266,9 +268,10 @@ Para usar como checklist en un nuevo sitio, este es un orden posible que respeta
 20. **Redirects** (5.7)
 21. **Configuración SEO** (5.8)
 22. **Deploy staging** (5.9)
-23. **Responsive y pulido** (6.1–6.5)
-24. **Deploy producción, handoff y deploy hook Sanity → Vercel** (7.1–7.4)
-25. **git push** al remoto (tras los commits hechos al cierre de cada fase)
+23. **Verificación visual** frente a screenshots de referencia; corregir discrepancias (6.0)
+24. **Responsive y pulido** (6.1–6.5)
+25. **Deploy producción, handoff y deploy hook Sanity → Vercel** (7.1–7.4)
+26. **git push** al remoto (tras los commits hechos al cierre de cada fase)
 
 ---
 
@@ -309,22 +312,22 @@ TinyJPG es manual en la web. Para automatizar: usar **sharp** (Node) o **squoosh
 
 | Fase | Artefactos |
 |------|------------|
-| 1 | `urls.json`; `structure.json` o doc (nav, árbol, templates); `audit.json` por cada URL con title, tipo, body, imágenes in-page, forms, embeds; **estructura de layout por tipo de página**; **header** (comportamiento al scroll + enlaces) y **footer** (todos los enlaces, incluidas redes sociales); lista de medios (URL origen + uso previsto) |
+| 1 | `urls.json`; `structure.json` o doc (nav, árbol, templates); `audit.json` por cada URL con title, tipo, body, imágenes in-page, forms, embeds; **estructura de layout por tipo de página**; **header** (comportamiento al scroll + enlaces) y **footer** (todos los enlaces, incluidas redes sociales); lista de medios (URL origen + uso previsto); **screenshots de referencia** del origen en `phase1/reference-screenshots/` (por tipo de página y viewport) |
 | 2 | Logos en repo; **colores y tipografías extraídos del origen** (documentados); todas las imágenes descargadas y optimizadas (WebP/AVIF donde aplique); `content/*.json` por tipo; revisión ortográfica documentada |
 | 3 | Repo con `studio-*/` (schemas, seed scripts); contenido en Sanity; Custom desk; **Studio desplegado en producción** (URL `https://<studioHost>.sanity.studio/` documentada en handoff); o doc de excepción si no se usa Sanity |
 | 4 | Guía de estilos **con colores y tipografía del origen** (tokens/componentes/breakpoints); especificación header (comportamiento al scroll, todos los enlaces) y footer (todos los enlaces, **cada red social**); favicon.ico, favicon.svg, apple-touch-icon; **layouts por tipo replicando estructura y orden del origen** |
 | 5 | Astro + Sanity (env, GROQ); todas las rutas equivalentes al origen; **páginas replicando estructura y layout del origen** (4.5); componente de imagen (lazy load, lightbox si aplica); formularios con destino real y consentimiento/avisos; redirects; SEO completo (meta, og, twitter, sitemap, robots, JSON-LD si aplica); URL de staging |
-| 6 | Ajustes móvil por página; grids de imágenes; revisión hover/tap; lazy load y formatos imagen; revisión a11y (contraste, foco, labels, encabezados) |
+| 6 | **Verificación visual** (6.0): comparación sitio nuevo vs screenshots de referencia; discrepancias corregidas; ajustes móvil por página; grids de imágenes; revisión hover/tap; lazy load y formatos imagen; revisión a11y (contraste, foco, labels, encabezados) |
 | 7 | URL de producción; handoff con edición de contenido, despliegue y variables de entorno; deploy hook Sanity → Vercel documentado en handoff |
 
 ### Criterios de “fase completada” (para no avanzar a ciegas)
 
-- **Fase 1:** Todas las URLs clasificadas; audit con body, imágenes y forms por URL; **estructura de layout por tipo de página**; **header (comportamiento al scroll + enlaces) y footer (todos los enlaces, incluidas redes)**; lista de medios completa (URL + uso).
+- **Fase 1:** Todas las URLs clasificadas; audit con body, imágenes y forms por URL; **screenshots de referencia** del origen por tipo de página y viewport (1.6); **estructura de layout por tipo de página**; **header (comportamiento al scroll + enlaces) y footer (todos los enlaces, incluidas redes)**; lista de medios completa (URL + uso).
 - **Fase 2:** Contenido en JSON/CSV; **colores y tipografías extraídos del origen** documentados; todas las imágenes descargadas y optimizadas (o solo logo si el sitio no tiene más); ortografía revisada y documentada.
 - **Fase 3:** Sanity con schemas, seed, documentos con imágenes, Custom desk, **Studio desplegado (URL en handoff)**; o excepción documentada.
 - **Fase 4:** Guía con **colores y tipografía del origen** (tokens/componentes/breakpoints); especificación header (comportamiento al scroll, todos los enlaces) y footer (**todos los enlaces, cada red social**); favicon.ico, favicon.svg, apple-touch-icon; **layouts por tipo replicando estructura y orden del origen**.
 - **Fase 5:** Todas las rutas del origen; **layout y estructura de cada tipo de página replicando el origen**; colores y tipografía del origen aplicados; header y footer con todos los enlaces y comportamiento; componente de imagen (lazy load; lightbox si hay galerías); formularios con destino y consentimiento/avisos; og, twitter, sitemap, robots, JSON-LD si aplica; URL de staging.
-- **Fase 6:** Móvil revisado; grids y tap targets; sin información crítica solo en hover; revisión a11y (contraste, foco, labels, h1–h6).
+- **Fase 6:** **Verificación visual (6.0)** hecha: comparación con screenshots de referencia por tipo de página y viewport; discrepancias de colores, tipografía, estructura o header/footer corregidas; móvil revisado; grids y tap targets; sin información crítica solo en hover; revisión a11y (contraste, foco, labels, h1–h6).
 - **Fase 7:** URL de producción; handoff con edición de contenido, despliegue y variables de entorno; deploy hook Sanity → Vercel configurado y documentado.
 
 ### Control de versiones (git)
@@ -334,6 +337,7 @@ TinyJPG es manual en la web. Para automatizar: usar **sharp** (Node) o **squoosh
 
 ### Qué puede fallar y qué hacer
 
+- **La apariencia del nuevo sitio difiere del origen:** Suele deberse a colores o tipografía no extraídos correctamente (usar valores del origen, no genéricos), estructura de secciones simplificada o reordenada, o header/footer incompletos. La guía mitiga esto con: **screenshots de referencia (1.6)** del origen por tipo de página y viewport, y **verificación visual obligatoria (6.0)** antes de dar por cerrada la Fase 6: comparar el sitio nuevo con esas capturas y corregir discrepancias antes de seguir.
 - **No hay sitemap:** Crawlear desde la home; limitar profundidad y mismo dominio.
 - **Páginas con mucho JS:** Usar browser/crawl que renderice (Playwright/Puppeteer) para obtener HTML final.
 - **Contenido que no encaja en el schema:** Ajustar schema y re-ejecutar seed (patch para no perder imágenes).
